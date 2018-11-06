@@ -29,6 +29,16 @@ import android.provider.Settings;
 import com.android.internal.logging.nano.MetricsProto;
 import com.android.settings.R;
 import com.android.settings.SettingsPreferenceFragment;
+import android.app.ActivityManager;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.ContentResolver;
+import android.content.DialogInterface;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MenuInflater;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.havoc.settings.preferences.SecureSettingSeekBarPreference;
 import net.margaritov.preference.colorpicker.ColorPickerPreference;
@@ -51,10 +61,16 @@ public class PulseSettings extends SettingsPreferenceFragment implements
     private static final String PULSE_SOLID_UNITS_OPACITY = "pulse_solid_units_opacity";
     private static final String PULSE_CUSTOM_BUTTONS_OPACITY = "pulse_custom_buttons_opacity";
 
+    static final int DEFAULT = 0xffffffff;
+    static final int DEFAULT_TO = 0xff8080ff;
+    static final int DEFAULT_FROM = 0xffff8080;
+    private static final int MENU_RESET = Menu.FIRST;
     SwitchPreference mShowPulse;
     ListPreference mRenderMode;
     SwitchPreference mAutoColor;
     ColorPickerPreference mPulseColor;
+    ColorPickerPreference mLavaLampColorFrom;
+    ColorPickerPreference mLavaLampColorTo;
     SwitchPreference mLavaLampEnabled;
     SecureSettingSeekBarPreference mCustomDimen;
     SecureSettingSeekBarPreference mCustomDiv;
@@ -102,6 +118,18 @@ public class PulseSettings extends SettingsPreferenceFragment implements
         mPulseColor = (ColorPickerPreference) findPreference("eos_fling_pulse_color");
         mPulseColor.setNewPreviewColor(pulseColor);
         mPulseColor.setOnPreferenceChangeListener(this);
+
+        int lavaLampColorFrom = Settings.Secure.getIntForUser(getContentResolver(),
+                Settings.Secure.FLING_PULSE_LAVALAMP_COLOR_FROM, 0xffff8080, UserHandle.USER_CURRENT);
+        mLavaLampColorFrom = (ColorPickerPreference) findPreference("fling_lavalamp_color_from");
+        mLavaLampColorFrom.setNewPreviewColor(lavaLampColorFrom);
+        mLavaLampColorFrom.setOnPreferenceChangeListener(this);
+
+         int lavaLampColorTo = Settings.Secure.getIntForUser(getContentResolver(),
+                Settings.Secure.FLING_PULSE_LAVALAMP_COLOR_TO, 0xff8080ff, UserHandle.USER_CURRENT);
+        mLavaLampColorTo = (ColorPickerPreference) findPreference("fling_lavalamp_color_to");
+        mLavaLampColorTo.setNewPreviewColor(lavaLampColorTo);
+        mLavaLampColorTo.setOnPreferenceChangeListener(this);
 
         mLavaLampEnabled = (SwitchPreference) findPreference("eos_fling_lavalamp");
         mLavaLampEnabled.setChecked(Settings.Secure.getIntForUser(getContentResolver(),
@@ -207,6 +235,16 @@ public class PulseSettings extends SettingsPreferenceFragment implements
             Settings.Secure.putIntForUser(getContentResolver(),
                     Settings.Secure.FLING_PULSE_COLOR, color, UserHandle.USER_CURRENT);
             return true;
+        } else if (preference.equals(mLavaLampColorFrom)) {
+            int color = ((Integer) newValue).intValue();
+            Settings.Secure.putIntForUser(getContentResolver(),
+                    Settings.Secure.FLING_PULSE_LAVALAMP_COLOR_FROM, color, UserHandle.USER_CURRENT);
+            return true;
+        } else if (preference.equals(mLavaLampColorTo)) {
+            int color = ((Integer) newValue).intValue();
+            Settings.Secure.putIntForUser(getContentResolver(),
+                    Settings.Secure.FLING_PULSE_LAVALAMP_COLOR_TO, color, UserHandle.USER_CURRENT);
+            return true;
         } else if (preference.equals(mLavaLampEnabled)) {
             boolean enabled = ((Boolean) newValue).booleanValue();
             Settings.Secure.putIntForUser(getContentResolver(),
@@ -270,6 +308,52 @@ public class PulseSettings extends SettingsPreferenceFragment implements
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.add(0, MENU_RESET, 0, R.string.reset)
+                .setIcon(R.drawable.ic_action_reset)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+    }
+     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case MENU_RESET:
+                resetToDefault();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
+     private void resetToDefault() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+        alertDialog.setTitle(R.string.pulse_colors_reset_title);
+        alertDialog.setMessage(R.string.pulse_colors_reset_message);
+        alertDialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                resetValues();
+            }
+        });
+        alertDialog.setNegativeButton(R.string.cancel, null);
+        alertDialog.create().show();
+    }
+
+     private void resetValues() {
+	ContentResolver resolver = getActivity().getContentResolver();
+        Settings.Secure.putInt(getContentResolver(),
+                Settings.Secure.FLING_PULSE_LAVALAMP_COLOR_TO, DEFAULT_TO);
+        mLavaLampColorTo.setNewPreviewColor(DEFAULT_TO);
+        mLavaLampColorTo.setSummary(R.string.default_string);
+        Settings.Secure.putInt(getContentResolver(),
+                Settings.Secure.FLING_PULSE_LAVALAMP_COLOR_FROM, DEFAULT_FROM);
+        mLavaLampColorFrom.setNewPreviewColor(DEFAULT_FROM);
+        mLavaLampColorFrom.setSummary(R.string.default_string);
+        Settings.Secure.putInt(getContentResolver(),
+                Settings.Secure.FLING_PULSE_COLOR, DEFAULT);
+        mPulseColor.setNewPreviewColor(DEFAULT);
+        mPulseColor.setSummary(R.string.default_string);
     }
 
     @Override
