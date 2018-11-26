@@ -69,6 +69,12 @@
         android:defaultValue="60"
         android:persistent="false" />
 
+    <PreferenceScreen
+        android:key="pixel_anim"
+        android:fragment="com.android.settings.smartnav.PixelAnimDurationSettings"
+        android:title="@string/pixel_anim_title"
+        android:summary="@string/pixel_anim_summary"/>
+
     <com.havoc.settings.preferences.SecureSettingSwitchPreference
         android:key="smartbar_doubletap_sleep"
         android:title="@string/smartbar_double_tap_sleep_title"
