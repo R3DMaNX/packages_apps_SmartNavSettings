@@ -87,4 +87,19 @@
             android:summary="@string/pulse_settings_summary"
             android:fragment="com.android.settings.smartnav.PulseSettings" />
     </PreferenceCategory>
+
+    <com.havoc.settings.preferences.SystemSettingSwitchPreference
+        android:key="pixel_nav_animation"
+        android:title="@string/pixel_navbar_anim_title"
+        android:summary="@string/pixel_navbar_anim_summary"
+        android:dependency="navbar_visibility"
+        android:defaultValue="true" />
+
+    <com.havoc.settings.preferences.SystemSettingSwitchPreference
+        android:key="one_hand_mode_enabled"
+        android:title="@string/one_hand_mode_title"
+        android:summary="@string/one_hand_mode_summary"
+        android:dependency="navbar_visibility"
+        android:defaultValue="false" />
+
 </PreferenceScreen>

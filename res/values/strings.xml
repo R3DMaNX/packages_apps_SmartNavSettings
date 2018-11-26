@@ -209,5 +209,12 @@
     <string name="smartbar_double_tap_sleep_summary">Double tap on empty navbar areas to sleep</string>
     <string name="reset">Reset</string>
 
+	<!-- Onehand UI mode -->
+    <string name="one_hand_mode_title">One-handed Mode</string>
+    <string name="one_hand_mode_summary">Allow swiping across right or left on navbar to enable</string>
+
+	<!-- Navbar Animation -->
+    <string name="pixel_navbar_anim_title">Pixel animation</string>
+    <string name="pixel_navbar_anim_summary">Toggle home button animation</string>
 
 </resources>
