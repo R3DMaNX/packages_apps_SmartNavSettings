@@ -15,7 +15,7 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- SmartNav -->
-    <string name="bottom_nav_navigation_title">Navigation</string>
+    <string name="bottom_nav_navigation_title">Navigation Bar</string>
     <string name="navbar_interface_title">Interface</string>
     <string name="navbar_size">Bar size</string>
     <string name="navbar_mode">Navigation mode</string>
@@ -258,4 +258,10 @@
     <string name="dlg_reset_android">Default</string>
     <string name="dlg_reset_bliss">Custom</string>
 
+    <!-- Stock navbar -->
+    <string name="navbar_layout_title">Layout</string>
+    <string name="navbar_layout_summary">Customize the buttons displayed on Navbar</string>
+    <string name="nav_gesture_settings_title">Gestures</string>
+    <string name="nav_gesture_settings_summary">Toggle the gestures for Navbar</string>
+    
 </resources>
